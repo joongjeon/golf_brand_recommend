@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="format-detection" content="telephone=no" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>나에게 맞는 골프웨어 브랜드 찾기</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --g-deep:   #193D2A;
+  --g-mid:    #2A6049;
+  --g-soft:   #4D9970;
+  --g-pale:   #C8E6D6;
+  --g-bg:     #EBF5EF;
+  --gold:     #B8832A;
+  --gold-lt:  #D4A84E;
+  --gold-pale:#FAF0DC;
+  --cream:    #F7F4EE;
+  --ivory:    #FDFCF8;
+  --ink:      #1A1A1A;
+  --ink-mid:  #555;
+  --ink-lt:   #999;
+  --border:   rgba(25,61,42,.10);
+  --shadow:   0 12px 40px rgba(25,61,42,.12);
+  --shadow-sm:0 3px 14px rgba(25,61,42,.08);
+  --r:        16px;
+  --r-sm:     10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+img{display:block;width:100%;}
+button,input{cursor:pointer;font-family:inherit;border:none;outline:none;}
+html{height:100%;}
+body{background:var(--cream);color:var(--ink);font-family:'Noto Sans KR',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+/* ── Screen system ─────────────────── */
+.screen{display:none;min-height:100vh;flex-direction:column;align-items:center;}
+.screen.active{display:flex;}
+
+/* ══════════════════════════════════════
+   START SCREEN
+══════════════════════════════════════ */
+#startScreen{
+  background:var(--g-deep);
+  justify-content:center;
+  padding:60px 28px 80px;
+  position:relative;overflow:hidden;
+  text-align:center;
+}
+#startScreen::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 15% 10%,rgba(184,131,42,.18) 0%,transparent 55%),
+             radial-gradient(ellipse 70% 50% at 85% 90%,rgba(77,153,112,.15) 0%,transparent 55%);
+  pointer-events:none;
+}
+.start-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1px solid rgba(212,168,78,.35);
+  border-radius:20px;padding:6px 16px;
+  font-size:.72rem;font-weight:500;letter-spacing:2px;
+  color:var(--gold-lt);text-transform:uppercase;
+  margin-bottom:28px;
+  background:rgba(184,131,42,.08);
+}
+.start-h1{
+  font-family:'Noto Serif KR',serif;
+  font-size:clamp(1.7rem,7vw,2.6rem);
+  font-weight:700;line-height:1.3;
+  color:#fff;letter-spacing:-.5px;
+  margin-bottom:16px;
+}
+.start-h1 em{font-style:normal;color:var(--gold-lt);}
+.start-desc{
+  font-size:.88rem;color:rgba(255,255,255,.65);
+  line-height:1.85;margin-bottom:40px;
+  max-width:320px;margin-left:auto;margin-right:auto;
+}
+.start-cta{
+  background:linear-gradient(135deg,var(--gold),var(--gold-lt));
+  color:#fff;
+  font-family:'Noto Serif KR',serif;
+  font-size:1rem;font-weight:600;letter-spacing:.5px;
+  padding:16px 44px;border-radius:var(--r);
+  box-shadow:0 8px 28px rgba(184,131,42,.38);
+  transition:transform .15s,box-shadow .2s;
+  user-select:none;-webkit-user-select:none;
+}
+.start-cta:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(184,131,42,.45);}
+.start-cta:active{transform:scale(.98);}
+.start-brands-preview{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:8px;
+  margin-top:44px;max-width:380px;
+  opacity:.5;
+}
+.sbp-tag{
+  font-size:.68rem;letter-spacing:.5px;color:rgba(255,255,255,.7);
+  border:1px solid rgba(255,255,255,.15);border-radius:20px;
+  padding:4px 12px;
+}
+
+/* Start deco lines */
+.start-deco{
+  position:absolute;
+  width:200px;height:200px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.04);
+  pointer-events:none;
+}
+.start-deco-1{top:-60px;right:-60px;}
+.start-deco-2{bottom:-80px;left:-80px;width:260px;height:260px;border-color:rgba(184,131,42,.08);}
+
+/* ══════════════════════════════════════
+   QUESTION SCREEN
+══════════════════════════════════════ */
+#questionScreen{
+  background:var(--cream);
+  padding:0;
+  justify-content:flex-start;
+}
+/* Progress header */
+.q-header{
+  width:100%;padding:20px 24px 0;
+  position:sticky;top:0;z-index:10;
+  background:var(--cream);
+  border-bottom:1px solid var(--border);
+  padding-bottom:16px;
+}
+.q-meta{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:10px;
+}
+.q-step{
+  font-size:.72rem;font-weight:700;letter-spacing:1.5px;
+  color:var(--g-soft);text-transform:uppercase;
+}
+.q-of{font-size:.72rem;color:var(--ink-lt);}
+.q-progress{
+  height:3px;background:rgba(25,61,42,.1);border-radius:99px;overflow:hidden;
+}
+.q-progress-bar{
+  height:100%;border-radius:99px;
+  background:linear-gradient(90deg,var(--g-soft),var(--gold));
+  transition:width .5s cubic-bezier(.4,0,.2,1);
+}
+
+/* Question body */
+.q-body{
+  width:100%;max-width:520px;
+  padding:28px 24px 40px;
+  flex:1;
+}
+.q-category{
+  display:inline-block;
+  font-size:.68rem;font-weight:700;letter-spacing:1.5px;
+  color:var(--g-soft);text-transform:uppercase;
+  margin-bottom:10px;
+}
+.q-text{
+  font-family:'Noto Serif KR',serif;
+  font-size:clamp(1.1rem,4.5vw,1.4rem);
+  font-weight:700;line-height:1.5;
+  color:var(--g-deep);
+  margin-bottom:8px;
+}
+.q-hint{font-size:.78rem;color:var(--ink-lt);margin-bottom:24px;}
+
+/* Answer options */
+.q-options{display:flex;flex-direction:column;gap:10px;}
+.q-option{
+  background:var(--ivory);
+  border:1.5px solid var(--border);
+  border-radius:var(--r);
+  padding:16px 18px;
+  display:flex;align-items:center;gap:14px;
+  transition:all .2s cubic-bezier(.34,1.56,.64,1);
+  text-align:left;
+  user-select:none;-webkit-user-select:none;
+}
+.q-option:hover{
+  border-color:var(--g-soft);
+  background:#fff;
+  transform:translateX(4px);
+  box-shadow:var(--shadow-sm);
+}
+.q-option:active{transform:scale(.98);}
+.q-option.selected{
+  border-color:var(--g-mid);
+  background:var(--g-bg);
+  transform:translateX(4px);
+  box-shadow:0 4px 20px rgba(42,96,73,.15);
+}
+.q-opt-icon{
+  font-size:1.3rem;flex-shrink:0;
+  width:40px;height:40px;
+  border-radius:10px;background:var(--cream);
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s;
+}
+.q-option.selected .q-opt-icon{background:rgba(42,96,73,.12);}
+.q-opt-content{flex:1;}
+.q-opt-label{
+  font-size:.92rem;font-weight:600;color:var(--g-deep);
+  line-height:1.3;margin-bottom:3px;
+}
+.q-opt-sub{font-size:.75rem;color:var(--ink-lt);line-height:1.4;}
+.q-opt-check{
+  width:20px;height:20px;border-radius:50%;
+  border:1.5px solid var(--border);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;font-size:10px;color:#fff;
+}
+.q-option.selected .q-opt-check{
+  background:var(--g-mid);border-color:var(--g-mid);
+}
+
+/* ══════════════════════════════════════
+   LOADING SCREEN
+══════════════════════════════════════ */
+#loadingScreen{
+  background:var(--g-deep);
+  justify-content:center;text-align:center;
+  padding:60px 28px;
+}
+.load-icon{
+  font-size:3rem;margin-bottom:28px;
+  animation:spin 2s ease-in-out infinite;
+  display:block;
+}
+@keyframes spin{
+  0%{transform:rotate(0deg) scale(1);}
+  50%{transform:rotate(180deg) scale(1.15);}
+  100%{transform:rotate(360deg) scale(1);}
+}
+.load-title{
+  font-family:'Noto Serif KR',serif;
+  font-size:1.4rem;font-weight:700;
+  color:#fff;margin-bottom:10px;
+}
+.load-sub{font-size:.85rem;color:rgba(255,255,255,.55);}
+.load-bar-wrap{
+  width:180px;height:3px;background:rgba(255,255,255,.15);
+  border-radius:99px;margin:28px auto 0;overflow:hidden;
+}
+.load-bar{
+  height:100%;border-radius:99px;width:0%;
+  background:linear-gradient(90deg,var(--g-soft),var(--gold));
+  animation:loadprog 2.4s ease-in-out forwards;
+}
+@keyframes loadprog{
+  0%{width:0%;}40%{width:60%;}80%{width:85%;}100%{width:100%;}
+}
+
+/* ══════════════════════════════════════
+   RESULT SCREEN
+══════════════════════════════════════ */
+#resultScreen{
+  background:var(--cream);
+  padding:0 0 80px;
+  justify-content:flex-start;
+}
+.res-hero{
+  width:100%;
+  background:var(--g-deep);
+  padding:36px 28px 48px;
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+.res-hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 50% at 80% 20%,rgba(184,131,42,.15) 0%,transparent 55%);
+  pointer-events:none;
+}
+.res-label{
+  font-size:.7rem;letter-spacing:2px;font-weight:500;
+  color:rgba(255,255,255,.5);text-transform:uppercase;
+  margin-bottom:20px;
+}
+.res-brand-icon{
+  font-size:2.6rem;margin-bottom:10px;
+  filter:drop-shadow(0 4px 12px rgba(0,0,0,.2));
+}
+.res-brand-name{
+  font-family:'Noto Serif KR',serif;
+  font-size:clamp(1.6rem,7vw,2.4rem);
+  font-weight:900;letter-spacing:-.5px;
+  color:#fff;margin-bottom:4px;
+}
+.res-brand-en{
+  font-size:.78rem;letter-spacing:3px;
+  color:rgba(255,255,255,.4);text-transform:uppercase;
+  margin-bottom:16px;
+}
+.res-match-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(184,131,42,.2);
+  border:1px solid rgba(212,168,78,.35);
+  border-radius:20px;padding:6px 16px;
+  font-size:.78rem;font-weight:600;
+  color:var(--gold-lt);
+  margin-bottom:20px;
+}
+.res-tags-row{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:6px;
+  margin-bottom:0;
+}
+.res-tag{
+  font-size:.7rem;font-weight:500;letter-spacing:.3px;
+  background:rgba(255,255,255,.1);
+  color:rgba(255,255,255,.75);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:20px;padding:4px 12px;
+}
+
+/* Result body */
+.res-body{
+  width:100%;max-width:520px;
+  padding:0 20px;margin-top:-20px;
+}
+
+/* Card */
+.res-card{
+  background:#fff;border-radius:20px;
+  padding:26px 22px;
+  box-shadow:var(--shadow);
+  margin-bottom:14px;
+  position:relative;
+}
+.res-card::before{
+  content:'';position:absolute;top:0;left:24px;right:24px;height:2px;
+  background:linear-gradient(90deg,transparent,var(--g-soft),transparent);
+  border-radius:0 0 2px 2px;
+}
+.res-section-ttl{
+  font-size:.68rem;font-weight:700;letter-spacing:1.5px;
+  color:var(--ink-lt);text-transform:uppercase;
+  margin-bottom:12px;
+  display:flex;align-items:center;gap:6px;
+}
+.res-section-ttl::after{content:'';flex:1;height:1px;background:rgba(0,0,0,.06);}
+
+.res-desc{
+  font-size:.9rem;line-height:1.9;color:var(--ink-mid);
+  word-break:keep-all;
+}
+
+/* Info grid */
+.res-info-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+}
+.res-info-item{
+  background:var(--cream);border-radius:var(--r-sm);
+  padding:12px 14px;
+}
+.res-info-lbl{font-size:.65rem;font-weight:700;letter-spacing:.5px;color:var(--ink-lt);margin-bottom:4px;}
+.res-info-val{font-size:.88rem;font-weight:600;color:var(--g-deep);}
+
+/* Price stars */
+.price-star{color:var(--gold);font-size:.85rem;}
+.price-star-empty{color:var(--cream-dark,#e0dbd0);font-size:.85rem;}
+
+/* CTA button */
+.res-cta-wrap{padding:0 20px;margin-top:4px;max-width:520px;width:100%;}
+.res-cta{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;padding:18px;
+  background:linear-gradient(135deg,var(--g-deep),var(--g-mid));
+  color:#fff;
+  font-family:'Noto Serif KR',serif;
+  font-size:1rem;font-weight:600;letter-spacing:.3px;
+  border-radius:var(--r);
+  box-shadow:0 8px 28px rgba(25,61,42,.28);
+  text-decoration:none;
+  transition:transform .15s,box-shadow .2s;
+  user-select:none;-webkit-user-select:none;
+}
+.res-cta:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(25,61,42,.36);}
+.res-cta:active{transform:scale(.98);}
+.cta-arrow{font-size:1rem;transition:transform .2s;}
+.res-cta:hover .cta-arrow{transform:translateX(4px);}
+
+/* Runner-up section */
+.runner-label{
+  font-size:.68rem;font-weight:700;letter-spacing:1.5px;
+  color:var(--ink-lt);text-transform:uppercase;
+  padding:0 20px;margin:28px 0 12px;
+  width:100%;max-width:520px;
+}
+.runner-cards{
+  width:100%;max-width:520px;
+  padding:0 20px;
+  display:flex;flex-direction:column;gap:10px;
+}
+.runner-card{
+  background:#fff;border-radius:var(--r);
+  padding:16px 18px;
+  box-shadow:var(--shadow-sm);
+  display:flex;align-items:center;gap:14px;
+  text-decoration:none;color:inherit;
+  transition:transform .2s, box-shadow .2s;
+  user-select:none;-webkit-user-select:none;
+}
+.runner-card:hover{transform:translateX(4px);box-shadow:0 6px 24px rgba(25,61,42,.12);}
+.runner-icon{
+  font-size:1.6rem;width:48px;height:48px;
+  background:var(--cream);border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.runner-info{flex:1;}
+.runner-name{font-size:.88rem;font-weight:700;color:var(--g-deep);margin-bottom:2px;}
+.runner-tags{font-size:.7rem;color:var(--ink-lt);}
+.runner-match{
+  font-size:.72rem;font-weight:700;
+  color:var(--g-soft);
+  background:var(--g-bg);
+  border-radius:8px;padding:4px 9px;
+  flex-shrink:0;
+}
+.runner-arr{font-size:.9rem;color:var(--ink-lt);}
+
+/* Retry button */
+.retry-wrap{padding:0 20px;margin-top:16px;width:100%;max-width:520px;}
+.retry-btn{
+  width:100%;padding:13px;
+  border:1.5px solid var(--border);border-radius:var(--r);
+  background:#fff;color:var(--ink-mid);
+  font-size:.85rem;font-weight:500;
+  transition:all .2s;
+  user-select:none;-webkit-user-select:none;
+}
+.retry-btn:hover{border-color:var(--g-soft);color:var(--g-deep);}
+
+/* Animations */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(24px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.fade-up{animation:fadeUp .5s ease both;}
+.fade-up-1{animation:fadeUp .5s ease .1s both;}
+.fade-up-2{animation:fadeUp .5s ease .2s both;}
+.fade-up-3{animation:fadeUp .5s ease .3s both;}
+.fade-up-4{animation:fadeUp .5s ease .4s both;}
+
+@media(max-width:380px){
+  .q-option{padding:13px 14px;}
+  .res-info-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ START SCREEN ══ -->
+<div class="screen active" id="startScreen">
+  <div class="start-deco start-deco-1"></div>
+  <div class="start-deco start-deco-2"></div>
+  <div class="start-eyebrow">⛳ 골프웨어 스타일 가이드</div>
+  <h1 class="start-h1">나에게 딱 맞는<br><em>골프웨어 브랜드</em>는?</h1>
+  <p class="start-desc">5가지 간단한 질문으로 16개 프리미엄 골프 브랜드 중<br>내 스타일에 가장 잘 맞는 브랜드를 찾아드립니다.</p>
+  <button class="start-cta" onclick="startQuiz()">스타일 테스트 시작하기 →</button>
+  <div class="start-brands-preview">
+    <span class="sbp-tag">나이키골프</span><span class="sbp-tag">지포어</span>
+    <span class="sbp-tag">PXG</span><span class="sbp-tag">파리게이츠</span>
+    <span class="sbp-tag">마크앤로나</span><span class="sbp-tag">말본골프</span>
+    <span class="sbp-tag">타이틀리스트</span><span class="sbp-tag">+9개</span>
+  </div>
+</div>
+
+<!-- ══ QUESTION SCREEN ══ -->
+<div class="screen" id="questionScreen">
+  <div class="q-header">
+    <div class="q-meta">
+      <span class="q-step" id="qStep">QUESTION 1 / 5</span>
+      <span class="q-of" id="qOf">진행 중...</span>
+    </div>
+    <div class="q-progress">
+      <div class="q-progress-bar" id="qBar" style="width:20%"></div>
+    </div>
+  </div>
+  <div class="q-body">
+    <div class="q-category" id="qCat"></div>
+    <h2 class="q-text" id="qText"></h2>
+    <p class="q-hint" id="qHint"></p>
+    <div class="q-options" id="qOptions"></div>
+  </div>
+</div>
+
+<!-- ══ LOADING SCREEN ══ -->
+<div class="screen" id="loadingScreen">
+  <span class="load-icon" id="loadIcon">⛳</span>
+  <div class="load-title">스타일 분석 중...</div>
+  <div class="load-sub" id="loadSub">16개 브랜드 데이터와 매칭하는 중</div>
+  <div class="load-bar-wrap"><div class="load-bar"></div></div>
+</div>
+
+<!-- ══ RESULT SCREEN ══ -->
+<div class="screen" id="resultScreen">
+  <div class="res-hero fade-up">
+    <div class="res-label">✦ 나에게 맞는 골프웨어 브랜드 ✦</div>
+    <div class="res-brand-icon" id="rIcon">🏌</div>
+    <div class="res-brand-name" id="rName">브랜드</div>
+    <div class="res-brand-en" id="rEn">BRAND</div>
+    <div class="res-match-badge">
+      <span>🎯</span>
+      <span id="rMatch">매칭률</span>
+    </div>
+    <div class="res-tags-row" id="rTags"></div>
+  </div>
+
+  <div class="res-body">
+    <!-- 브랜드 소개 -->
+    <div class="res-card fade-up-1">
+      <div class="res-section-ttl"><span>📝</span> 브랜드 소개</div>
+      <p class="res-desc" id="rDesc"></p>
+    </div>
+
+    <!-- 브랜드 정보 -->
+    <div class="res-card fade-up-2">
+      <div class="res-section-ttl"><span>📊</span> 브랜드 프로필</div>
+      <div class="res-info-grid" id="rInfo"></div>
+    </div>
+
+    <!-- 추천 이유 -->
+    <div class="res-card fade-up-3">
+      <div class="res-section-ttl"><span>💡</span> 이 브랜드를 추천하는 이유</div>
+      <p class="res-desc" id="rWhy"></p>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="res-cta-wrap fade-up-3">
+    <a id="rCta" href="#" target="_blank" class="res-cta">
+      롯데백화점 Spring Golf Fair 방문하기 <span class="cta-arrow">→</span>
+    </a>
+  </div>
+
+  <!-- 2nd / 3rd -->
+  <div class="runner-label fade-up-4">이런 브랜드도 잘 맞아요</div>
+  <div class="runner-cards fade-up-4" id="runnerCards"></div>
+
+  <div class="retry-wrap fade-up-4">
+    <button class="retry-btn" onclick="restart()">🔄 다시 테스트하기</button>
+  </div>
+</div>
+
+<script>
+// ! [S] BRAND DATA — 16개 골프 브랜드 데이터베이스
+const BRANDS = [
+  {
+    id:'nike', name:'나이키 골프', en:'NIKE GOLF', icon:'⚡',
+    tags:['스포티','글로벌','퍼포먼스','트렌디'],
+    price:2, priceLabel:'5~15만원대', age:'20~40대',
+    style:'스포티 퍼포먼스',
+    desc:'세계 1위 스포츠 브랜드의 골프 라인. 첨단 기능성 소재와 젊고 활동적인 디자인이 공존합니다. 골프를 처음 시작하는 분부터 스포티한 감각을 원하는 골퍼까지 폭넓게 사랑받는 브랜드입니다.',
+    why:'스포티하고 실용적인 스타일을 원하면서 글로벌 브랜드의 신뢰성과 합리적인 가격대를 함께 원하는 분께 안성맞춤입니다.',
+    link:'https://www.lotteon.com/p/search?keyword=나이키+골프&mall_no=2',
+    // scores[q][a] — question별 answer별 점수
+    s: [[1,1,2,0],[0,2,2,0],[3,2,0,0],[1,0,3,0],[2,2,0,0]]
+  },
+  {
+    id:'southcape', name:'사우스케이프', en:'SOUTH CAPE', icon:'🌿',
+    tags:['리조트','프리미엄','세련된','한국브랜드'],
+    price:3, priceLabel:'15~35만원대', age:'30~50대',
+    style:'리조트 프리미엄',
+    desc:'제주 사우스케이프 리조트에서 탄생한 국내 프리미엄 골프 브랜드. 청정 자연에서 영감받은 차분하고 우아한 컬러 팔레트와 고급 소재로 리조트 라이프스타일을 담아냅니다.',
+    why:'세련되고 품격 있는 한국적 감성의 프리미엄 브랜드를 원하는 분, 화사하지 않고 절제된 럭셔리를 추구하는 분께 특히 잘 맞습니다.',
+    link:'https://www.lotteon.com/p/search?keyword=사우스케이프&mall_no=2',
+    s: [[1,1,2,2],[0,3,0,0],[0,1,3,0],[0,3,0,0],[1,0,1,2]]
+  },
+  {
+    id:'anew', name:'어뉴골프', en:'ANEW GOLF', icon:'🎨',
+    tags:['K-골프','트렌디','영감','컬러풀'],
+    price:1, priceLabel:'5~15만원대', age:'20~30대',
+    style:'K-골프 트렌드',
+    desc:'MZ세대 골퍼들이 열광하는 K-골프 대표 브랜드. 매 시즌 과감하고 유쾌한 컬러 조합과 합리적인 가격으로 품절 대란을 일으키는 핫한 브랜드입니다.',
+    why:'트렌디하고 영한 K-골프 감성, 선명한 컬러를 즐기면서 부담 없는 가격대를 찾는 분께 딱 맞는 브랜드입니다.',
+    link:'https://www.lotteon.com/p/search?keyword=어뉴골프&mall_no=2',
+    s: [[0,2,3,0],[0,0,3,2],[3,1,0,0],[0,0,3,2],[0,3,0,1]]
+  },
+  {
+    id:'gfore', name:'지포어', en:'G/FORE', icon:'🎯',
+    tags:['볼드','컬러풀','럭셔리','패션'],
+    price:3, priceLabel:'20~40만원대', age:'30~40대',
+    style:'볼드 럭셔리 패션',
+    desc:'미국에서 탄생한 럭셔리 골프 패션 브랜드. 과감한 원색 조합과 독창적인 디테일로 골프장을 패션 런웨이로 만드는 브랜드입니다. 세계 투어 프로들도 즐겨 착용합니다.',
+    why:'골프에서도 패션을 포기하지 않는 분, 화려하면서도 고급스러운 브랜드를 원하는 분께 완벽한 선택입니다.',
+    link:'https://www.lotteon.com/p/search?keyword=지포어&mall_no=2',
+    s: [[0,3,2,0],[0,0,1,3],[0,0,3,1],[1,0,2,3],[0,3,0,2]]
+  },
+  {
+    id:'titleist', name:'타이틀리스트', en:'TITLEIST', icon:'🏆',
+    tags:['투어퍼포먼스','클래식','정통','신뢰'],
+    price:3, priceLabel:'15~30만원대', age:'30~50대',
+    style:'투어 퍼포먼스 클래식',
+    desc:'세계 투어에서 가장 많이 선택받는 정통 퍼포먼스 브랜드. 군더더기 없는 절제된 디자인과 최고의 기능성으로 골프에 진지한 분들이 선택하는 브랜드입니다.',
+    why:'스코어 향상과 기능성을 최우선으로 생각하며, 클래식하고 격조 있는 브랜드를 원하는 진지한 골퍼에게 안성맞춤입니다.',
+    link:'https://www.lotteon.com/p/search?keyword=타이틀리스트&mall_no=2',
+    s: [[3,0,0,2],[3,0,0,0],[0,2,2,0],[2,0,1,0],[3,0,3,0]]
+  },
+  {
+    id:'footjoy', name:'풋조이', en:'FOOTJOY', icon:'👟',
+    tags:['정통골프','편안한','전통','믿음직한'],
+    price:2, priceLabel:'10~25만원대', age:'40~60대',
+    style:'정통 클래식 퍼포먼스',
+    desc:'150년 역사의 미국 정통 골프 전문 브랜드. 뛰어난 기능성과 편안한 착용감을 최우선으로 하며, 오랜 세월 전 세계 골퍼들에게 변함없이 사랑받는 신뢰의 브랜드입니다.',
+    why:'편안한 착용감과 검증된 기능성을 중시하며, 화려함보다 실용성과 정통 골프 브랜드의 격을 원하는 분께 추천합니다.',
+    link:'https://www.lotteon.com/p/search?keyword=풋조이&mall_no=2',
+    s: [[3,0,0,1],[3,0,0,0],[3,1,0,0],[2,0,0,0],[3,0,3,0]]
+  },
+  {
+    id:'hazzys', name:'헤지스골프', en:'HAZZYS GOLF', icon:'🎀',
+    tags:['영국감성','헤리티지','단정한','품격'],
+    price:2, priceLabel:'10~25만원대', age:'35~55대',
+    style:'브리티시 헤리티지',
+    desc:'영국 헤리티지 감성을 담은 국내 브랜드. 체크 패턴과 절제된 컬러 팔레트로 단정하고 품격 있는 스타일을 추구합니다. 오랫동안 꾸준히 사랑받는 스테디셀러입니다.',
+    why:'비즈니스 골프나 격식 있는 라운드가 많고, 영국 감성의 클래식하고 단정한 스타일을 합리적인 가격에 원하는 분께 어울립니다.',
+    link:'https://www.lotteon.com/p/search?keyword=헤지스+골프&mall_no=2',
+    s: [[0,0,1,3],[3,0,0,0],[3,2,0,0],[0,3,0,0],[1,0,2,0]]
+  },
+  {
+    id:'pxg', name:'PXG', en:'PXG', icon:'🖤',
+    tags:['울트라럭셔리','밀리터리','퍼포먼스','희소성'],
+    price:4, priceLabel:'40만원대 이상', age:'35~55대',
+    style:'프리미엄 밀리터리 퍼포먼스',
+    desc:'최고급 소재와 혁신적 기술력으로 무장한 미국 하이엔드 브랜드. 블랙을 중심으로 한 강렬하고 절제된 디자인이 시그니처로, 퍼포먼스와 럭셔리를 동시에 추구합니다.',
+    why:'가격보다 퀄리티를 최우선으로 생각하고, 화려하지 않지만 존재감 있는 최고급 퍼포먼스 브랜드를 원하는 분께 완벽합니다.',
+    link:'https://www.lotteon.com/p/search?keyword=PXG&mall_no=2',
+    s: [[3,0,0,2],[0,2,0,1],[0,0,0,3],[3,0,0,0],[2,0,1,2]]
+  },
+  {
+    id:'daks', name:'닥스골프', en:'DAKS GOLF', icon:'🏛',
+    tags:['영국명품','클래식','격조','성숙한'],
+    price:3, priceLabel:'20~40만원대', age:'45~65대',
+    style:'영국 명품 클래식',
+    desc:'영국 명품 닥스의 골프 라인. 전통적인 체크 패턴과 클래식한 영국 감성이 담긴 격조 있는 브랜드입니다. 성숙하고 품위 있는 골프 스타일을 완성해줍니다.',
+    why:'격식 있고 성숙한 골프 스타일을 원하며, 오랜 역사와 품격을 가진 영국 명품 브랜드에 끌리는 분께 최고의 선택입니다.',
+    link:'https://www.lotteon.com/p/search?keyword=닥스+골프&mall_no=2',
+    s: [[0,0,0,3],[3,0,0,0],[0,1,3,0],[0,3,0,0],[0,0,3,1]]
+  },
+  {
+    id:'markandlona', name:'마크앤로나', en:'MARK & LONA', icon:'🔥',
+    tags:['에지있는','그래픽','다크','일본감성'],
+    price:4, priceLabel:'30~60만원대', age:'25~45대',
+    style:'에지 다크 패션',
+    desc:'일본 도쿄에서 탄생한 에지 넘치는 골프 패션 브랜드. 블랙 기반의 강렬한 그래픽과 스트리트 감성으로 골프계의 다크호스로 자리잡았습니다. 개성 강한 패션 피플들의 선택입니다.',
+    why:'남들과 완전히 다른, 강렬하고 개성 있는 스타일을 원하는 분. 다크하고 에지 있는 럭셔리 골프 패션을 추구하는 분께 딱입니다.',
+    link:'https://www.lotteon.com/p/search?keyword=마크앤로나&mall_no=2',
+    s: [[0,3,0,0],[0,1,1,3],[0,0,0,3],[3,0,0,2],[0,2,0,3]]
+  },
+  {
+    id:'malbon', name:'말본골프', en:'MALBON GOLF', icon:'🛹',
+    tags:['스트리트','MZ','LA감성','캐주얼'],
+    price:3, priceLabel:'15~35만원대', age:'20~35대',
+    style:'스트리트 골프 퓨전',
+    desc:'미국 LA에서 탄생한 스트리트-골프 퓨전 브랜드. 버킷햇과 캐주얼한 실루엣으로 MZ세대 골퍼들의 워너비 브랜드로 떠올랐습니다. SNS에서 가장 핫한 골프 브랜드입니다.',
+    why:'스트리트 감성과 골프를 자연스럽게 융합하고, SNS에서 돋보이는 트렌디한 스타일을 추구하는 MZ 골퍼에게 완벽합니다.',
+    link:'https://www.lotteon.com/p/search?keyword=말본골프&mall_no=2',
+    s: [[0,2,3,0],[0,0,3,1],[0,1,2,0],[0,0,2,1],[0,3,0,2]]
+  },
+  {
+    id:'standrews', name:'세인트앤드류스', en:'ST. ANDREWS', icon:'🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+    tags:['골프발상지','헤리티지','스코틀랜드','전통'],
+    price:3, priceLabel:'20~40만원대', age:'40~65대',
+    style:'스코틀랜드 골프 헤리티지',
+    desc:'골프의 발상지 스코틀랜드 세인트앤드류스의 이름을 딴 프리미엄 브랜드. 골프 종주국의 전통과 헤리티지를 담은 품격 있는 스타일로 진정한 골프의 격을 보여줍니다.',
+    why:'골프의 역사와 전통을 존중하며, 품격 있고 클래식한 골프 스타일을 추구하는 골프 애호가에게 의미 있는 선택입니다.',
+    link:'https://www.lotteon.com/p/search?keyword=세인트앤드류스&mall_no=2',
+    s: [[1,0,0,3],[3,0,0,0],[0,1,3,0],[0,3,0,0],[1,0,3,1]]
+  },
+  {
+    id:'jlindeberg', name:'제이린드버그', en:'J.LINDEBERG', icon:'🇸🇪',
+    tags:['스칸디나비안','모던','패션','감성적'],
+    price:3, priceLabel:'20~45만원대', age:'28~45대',
+    style:'스칸디나비안 모던',
+    desc:'스웨덴 패션하우스에서 탄생한 골프 브랜드. 북유럽 특유의 미니멀하고 모던한 감각에 기능성을 더해, 패션과 퍼포먼스의 균형을 완벽하게 잡은 브랜드입니다.',
+    why:'세련되고 모던한 컨템포러리 스타일, 화려하지 않으면서도 감각적인 프리미엄 골프웨어를 원하는 트렌드세터에게 어울립니다.',
+    link:'https://www.lotteon.com/p/search?keyword=제이린드버그&mall_no=2',
+    s: [[0,2,1,1],[0,3,0,1],[0,1,3,0],[0,1,1,1],[0,3,0,1]]
+  },
+  {
+    id:'callaway', name:'켈러웨이', en:'CALLAWAY', icon:'🌐',
+    tags:['아메리칸','퍼포먼스','실용적','믿음직'],
+    price:2, priceLabel:'10~25만원대', age:'30~55대',
+    style:'아메리칸 퍼포먼스',
+    desc:'미국 정통 골프 브랜드. 뛰어난 기능성과 실용적인 디자인으로 전 세계 수많은 골퍼들에게 꾸준히 사랑받는 브랜드입니다. 기본에 충실하면서도 믿을 수 있는 선택입니다.',
+    why:'화려함보다 실용성과 기능성을 중시하며, 미국 정통 골프 브랜드의 신뢰감을 합리적인 가격에 원하는 분께 추천합니다.',
+    link:'https://www.lotteon.com/p/search?keyword=켈러웨이&mall_no=2',
+    s: [[3,0,1,1],[1,1,0,0],[3,2,0,0],[1,1,1,0],[3,0,1,0]]
+  },
+  {
+    id:'pearlygates', name:'파리게이츠', en:'PEARLY GATES', icon:'🌈',
+    tags:['화려한','플레이풀','일본럭셔리','패턴'],
+    price:4, priceLabel:'40만원대 이상', age:'30~50대',
+    style:'플레이풀 럭셔리 패턴',
+    desc:'일본의 유쾌하고 화려한 색채 감각이 담긴 럭셔리 브랜드. 독창적인 패턴과 강렬한 컬러 조합으로 골프장에서 단연 눈에 띄는 존재감을 자랑합니다. 명품 소재와 세공이 특징입니다.',
+    why:'골프장에서 가장 화려하고 독특한 스타일을 원하는 분, 고급 소재의 럭셔리 브랜드를 아낌없이 즐기는 분께 완벽합니다.',
+    link:'https://www.lotteon.com/p/search?keyword=파리게이츠&mall_no=2',
+    s: [[0,3,2,0],[0,0,0,3],[0,0,0,3],[0,0,1,3],[0,2,0,3]]
+  },
+  {
+    id:'ping', name:'핑', en:'PING', icon:'🎖',
+    tags:['테크니컬','신뢰','기능성','심플'],
+    price:3, priceLabel:'15~35만원대', age:'35~60대',
+    style:'테크니컬 퍼포먼스',
+    desc:'엔지니어링 DNA를 가진 퍼포먼스 전문 브랜드. 화려한 장식 없이 기능에 집중한 심플하고 신뢰성 높은 디자인으로 진지한 골퍼들 사이에서 높은 평가를 받고 있습니다.',
+    why:'기능성과 퍼포먼스를 가장 중요하게 생각하며, 과시하지 않고 실력으로 말하는 진지한 골퍼를 위한 브랜드입니다.',
+    link:'https://www.lotteon.com/p/search?keyword=핑+골프&mall_no=2',
+    s: [[3,0,0,1],[2,1,0,0],[0,1,2,1],[2,1,0,0],[3,0,1,0]]
+  }
+];
+// ! [E] BRAND DATA
+
+// ! [S] QUESTION DATA — 5가지 스타일 진단 질문
+const QUESTIONS = [
+  {
+    cat: '라운드 스타일',
+    text: '가장 기대하는 라운드 스타일은 무엇인가요?',
+    hint: '골프를 즐기시는 가장 큰 이유와 가장 가까운 것을 선택해주세요.',
+    opts: [
+      { icon:'🏌', label:'스코어와 실력 향상이 목표예요', sub:'코스 공략, 진지하게 치고 싶어요' },
+      { icon:'📸', label:'매 라운드가 화보처럼 멋지면 좋겠어요', sub:'스타일리시한 골프룩이 중요해요' },
+      { icon:'🍃', label:'동반자와 즐겁고 여유로운 라운드', sub:'웃고 즐기는 소셜한 라운드가 좋아요' },
+      { icon:'🤝', label:'품격 있는 비즈니스 라운드', sub:'신뢰감 주는 단정한 이미지가 중요해요' }
+    ]
+  },
+  {
+    cat: '스타일 무드',
+    text: '이상적인 골프웨어 스타일 무드는 어떤 쪽인가요?',
+    hint: '평소 옷을 고를 때 가장 끌리는 감성을 선택해주세요.',
+    opts: [
+      { icon:'🎩', label:'절제된 클래식 — 시간이 지나도 세련된 격조', sub:'헤리티지, 전통, 절제된 아름다움' },
+      { icon:'💎', label:'모던하고 세련된 컨템포러리 감각', sub:'깔끔하고 현대적인 미니멀 스타일' },
+      { icon:'🛹', label:'트렌디하고 영한 스트리트 감성', sub:'요즘 MZ들이 즐기는 캐주얼하고 핫한 스타일' },
+      { icon:'✨', label:'화려하고 개성 넘치는 유니크 스타일', sub:'시선을 사로잡는 강렬하고 특별한 스타일' }
+    ]
+  },
+  {
+    cat: '가격대',
+    text: '골프웨어 한 피스 기준, 편하게 투자하시는 가격대는요?',
+    hint: '상의 또는 하의 한 피스 기준입니다.',
+    opts: [
+      { icon:'💚', label:'10만원 이하', sub:'자주, 부담 없이 즐기고 싶어요' },
+      { icon:'💛', label:'10~20만원대', sub:'퀄리티 있게, 합리적으로 투자해요' },
+      { icon:'🧡', label:'20~40만원대', sub:'좋은 브랜드라면 아낌없이 투자해요' },
+      { icon:'❤', label:'40만원 이상', sub:'최고의 퀄리티라면 가격은 문제없어요' }
+    ]
+  },
+  {
+    cat: '컬러 취향',
+    text: '평소 선호하시는 골프웨어 컬러 톤은요?',
+    hint: '자주 입거나 갖고 싶은 컬러 스타일을 선택해주세요.',
+    opts: [
+      { icon:'🖤', label:'블랙·그레이·네이비 — 모던한 무채색', sub:'세련되고 단단한 모노톤 스타일' },
+      { icon:'🌿', label:'아이보리·카키·그린 — 자연스러운 어스톤', sub:'차분하고 고급스러운 내추럴 컬러' },
+      { icon:'🌸', label:'화이트·핑크·하늘 — 화사한 포인트 컬러', sub:'생기있고 밝은 선명한 컬러' },
+      { icon:'🎨', label:'화려한 패턴과 그래픽', sub:'눈에 확 띄는 강렬하고 독창적인 스타일' }
+    ]
+  },
+  {
+    cat: '브랜드 가치',
+    text: '브랜드를 선택할 때 가장 끌리는 포인트는요?',
+    hint: '구매 결정에 가장 크게 영향을 미치는 요소를 골라주세요.',
+    opts: [
+      { icon:'⚙', label:'기능성과 편안한 착용감', sub:'잘 치게 해주는 옷, 편안한 퍼포먼스' },
+      { icon:'📱', label:'SNS 핫 트렌드와 인기도', sub:'요즘 뜨는 브랜드, 사진 잘 나오는 스타일' },
+      { icon:'📜', label:'브랜드의 오랜 역사와 격조', sub:'진짜 골프 브랜드의 정통 헤리티지' },
+      { icon:'💎', label:'희소성과 나만의 개성', sub:'남들과 다른 독특한 브랜드, 나만의 취향' }
+    ]
+  }
+];
+// ! [E] QUESTION DATA
+
+// ! [S] APP STATE — 전역 상태 변수
+let currentQ = 0;
+let userAnswers = []; // [qIdx, aIdx] 배열
+let brandScores = {}; // brandId -> total score
+// ! [E] APP STATE
+
+// ! [S] SCREEN CONTROL — 화면 전환
+function showScr(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+// ! [E] SCREEN CONTROL
+
+// ! [S] QUIZ FLOW — 퀴즈 진행 로직
+function startQuiz(){
+  currentQ = 0;
+  userAnswers = [];
+  brandScores = {};
+  BRANDS.forEach(b => brandScores[b.id] = 0);
+  showScr('questionScreen');
+  renderQuestion(0);
+}
+
+function renderQuestion(qi){
+  const q = QUESTIONS[qi];
+  document.getElementById('qStep').textContent = `QUESTION ${qi+1} / 5`;
+  document.getElementById('qOf').textContent = ['라운드 스타일','스타일 무드','가격대','컬러 취향','브랜드 가치'][qi];
+  document.getElementById('qBar').style.width = ((qi+1)/5*100)+'%';
+  document.getElementById('qCat').textContent = q.cat;
+  document.getElementById('qText').textContent = q.text;
+  document.getElementById('qHint').textContent = q.hint;
+
+  const wrap = document.getElementById('qOptions');
+  wrap.innerHTML = '';
+  q.opts.forEach((opt,ai)=>{
+    const btn = document.createElement('button');
+    btn.className = 'q-option';
+    btn.innerHTML = `
+      <div class="q-opt-icon">${opt.icon}</div>
+      <div class="q-opt-content">
+        <div class="q-opt-label">${opt.label}</div>
+        <div class="q-opt-sub">${opt.sub}</div>
+      </div>
+      <div class="q-opt-check" id="chk_${ai}"></div>`;
+    btn.style.animation = `fadeUp .4s ease ${ai*0.07}s both`;
+    btn.onclick = () => selectAnswer(qi, ai, btn);
+    wrap.appendChild(btn);
+  });
+}
+
+function selectAnswer(qi, ai, el){
+  // * 시각 피드백
+  document.querySelectorAll('.q-option').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  el.querySelector('.q-opt-check').textContent = '✓';
+
+  // * 점수 반영
+  BRANDS.forEach(b => {
+    brandScores[b.id] += (b.s[qi][ai] || 0);
+  });
+  userAnswers[qi] = ai;
+
+  // * 다음 질문 또는 결과
+  setTimeout(() => {
+    if(qi < QUESTIONS.length - 1){
+      currentQ = qi + 1;
+      renderQuestion(currentQ);
+    } else {
+      goLoading();
+    }
+  }, 320);
+}
+
+function goLoading(){
+  showScr('loadingScreen');
+  const subs = [
+    '취향 데이터 분석 중...',
+    '16개 브랜드 매칭 중...',
+    '최적의 브랜드를 찾고 있어요...',
+  ];
+  let i = 0;
+  const t = setInterval(()=>{
+    document.getElementById('loadSub').textContent = subs[i % subs.length];
+    i++;
+  }, 650);
+  setTimeout(()=>{ clearInterval(t); calcResult(); }, 2400);
+}
+// ! [E] QUIZ FLOW
+
+// ! [S] RESULT CALC — 결과 계산 및 렌더링
+function calcResult(){
+  // * 점수 기준 정렬
+  const ranked = BRANDS
+    .map(b => ({ ...b, score: brandScores[b.id] }))
+    .sort((a,b) => b.score - a.score);
+
+  const top = ranked[0];
+  const maxScore = top.score;
+
+  // * 매칭률 계산 (65~98% 범위로 스케일)
+  const matchPct = Math.round(65 + (maxScore / (maxScore * 1.15)) * 33);
+
+  showScr('resultScreen');
+  renderResult(ranked, matchPct);
+}
+
+function renderResult(ranked, matchPct){
+  const top = ranked[0];
+
+  // * Hero
+  document.getElementById('rIcon').textContent = top.icon;
+  document.getElementById('rName').textContent = top.name;
+  document.getElementById('rEn').textContent = top.en;
+  document.getElementById('rMatch').textContent = `${matchPct}% 매칭`;
+
+  // * Tags
+  const tagsEl = document.getElementById('rTags');
+  tagsEl.innerHTML = top.tags.map(t=>`<span class="res-tag">${t}</span>`).join('');
+
+  // * Description
+  document.getElementById('rDesc').textContent = top.desc;
+
+  // * Why
+  document.getElementById('rWhy').textContent = top.why;
+
+  // * Info grid
+  const priceStars = '★'.repeat(top.price) + '☆'.repeat(4-top.price);
+  document.getElementById('rInfo').innerHTML = `
+    <div class="res-info-item">
+      <div class="res-info-lbl">💰 가격대</div>
+      <div class="res-info-val">${top.priceLabel}</div>
+    </div>
+    <div class="res-info-item">
+      <div class="res-info-lbl">⭐ 가격 레벨</div>
+      <div class="res-info-val" style="letter-spacing:2px;color:var(--gold)">${priceStars}</div>
+    </div>
+    <div class="res-info-item">
+      <div class="res-info-lbl">👥 주요 고객</div>
+      <div class="res-info-val">${top.age}</div>
+    </div>
+    <div class="res-info-item">
+      <div class="res-info-lbl">🎨 스타일</div>
+      <div class="res-info-val">${top.style}</div>
+    </div>`;
+
+  // * CTA
+  document.getElementById('rCta').href = 'https://www.lotteon.com/display/shop/seltDpShop/59691?mall_no=2';
+
+  // * Runner-ups (2nd, 3rd)
+  const runners = ranked.slice(1, 3);
+  const maxS = ranked[0].score;
+  const runnerEl = document.getElementById('runnerCards');
+  runnerEl.innerHTML = runners.map((b,i)=>{
+    const pct = Math.round(50 + (b.score / maxS) * 35);
+    return `<a href="${b.link}" target="_blank" class="runner-card">
+      <div class="runner-icon">${b.icon}</div>
+      <div class="runner-info">
+        <div class="runner-name">${b.name}</div>
+        <div class="runner-tags">${b.tags.slice(0,2).join(' · ')}</div>
+      </div>
+      <div class="runner-match">${pct}%</div>
+      <div class="runner-arr">→</div>
+    </a>`;
+  }).join('');
+}
+// ! [E] RESULT CALC
+
+// ! [S] MISC — 기타
+function restart(){
+  startQuiz();
+}
+
+document.addEventListener('keydown', e => {
+  if(e.key==='Enter' && document.getElementById('startScreen').classList.contains('active')){
+    startQuiz();
+  }
+});
+// ! [E] MISC
+</script>
+</body>
+</html>
